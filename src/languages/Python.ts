@@ -1,4 +1,4 @@
-import { Language, Token } from "../Flashlight";
+import type { Language, Token } from "../Flashlight";
 
 export enum PythonTokenType {
     WhiteSpace,
@@ -35,7 +35,7 @@ export const PythonReservedKeywords = <const>[
     'try', 'while', 'with', 'yield'
 ];
 
-export class PythonLanguage implements Language {
+export class Python implements Language {
     public name: string = "Python";
 
     private tokenizer = new PythonTokenizer();

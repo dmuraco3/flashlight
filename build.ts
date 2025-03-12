@@ -12,5 +12,6 @@ await Promise.all([
     plugins: [dts()],
     format: 'esm',
     naming: "[dir]/[name].js",
+    minify: true
   }),
 ])

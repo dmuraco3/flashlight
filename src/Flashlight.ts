@@ -1,6 +1,10 @@
+import type { LanguageStyle } from "@/languages/Language";
+
 export interface Token {
     tokenType: typeof TOKEN_TYPES[number];
     tokenValue: string;
+    parentToken?: Token,
+    childrenTokens?: Token[]
 }
 
 export interface Language {
@@ -27,13 +31,10 @@ export const TOKEN_TYPES = [
     "punctation",
     "important",
     "comment",
+    "whitespace",
 ] as const;
 
 export type TokenType = typeof TOKEN_TYPES[number];
-
-export type LanguageStyle = {
-    [tokenType in TokenType]: Partial<CSSStyleDeclaration>;
-};
 
 export class Flashlight {
     private languages: Language[];
@@ -59,41 +60,27 @@ export class Flashlight {
         return this.toStyledHTML(tokens);
     }
 
+    private parseCSSStyleDeclaration(styles: Partial<CSSStyleDeclaration>) {
+        return Object.entries(styles)
+            .map(([key, value]) => `${key.replace(/[A-Z]/g, m => `-${m.toLowerCase()}`)}: ${value}`)
+            .join('; ');
+    }
+
+    private flattenTokenTrees(tokens: Token[]): Token[] {
+        let output: Token[] = []
+        tokens.forEach(token => {
+            const newToken: Token = { ...token, parentToken: undefined, childrenTokens: undefined };
+            output.push(newToken);
+            if (token.childrenTokens) output.push(...this.flattenTokenTrees(token.childrenTokens))
+        })
+        return output;
+    }
+
     private toStyledHTML(tokens: Token[]) {
-        const output = tokens.map((token: Token) => {
-            const styleString = parseCSSStyleDeclaration(this.style[token.tokenType])
-            return `<span style="${styleString}">${token.tokenValue}</span>`;
-        }).join("");
-        const preStyles = parseCSSStyleDeclaration({ ...preCodeStyle, ...preStyle });
-        const codeStyles = parseCSSStyleDeclaration(preCodeStyle);
+        tokens = this.flattenTokenTrees(tokens);
+        const output = tokens.map((token: Token) => `<span style="${this.parseCSSStyleDeclaration(this.style.tokenStyles[token.tokenType])}">${token.tokenValue}</span>`).join("");
+        const preStyles = this.parseCSSStyleDeclaration(this.style.wrapperStyles.pre);
+        const codeStyles = this.parseCSSStyleDeclaration(this.style.wrapperStyles.code);
         return `<pre style="${preStyles}"><code style="${codeStyles}">${output}</code></pre>`;
     }
-}
-
-function parseCSSStyleDeclaration(styles: Partial<CSSStyleDeclaration>) {
-    return Object.entries(styles)
-        .map(([key, value]) => `${key.replace(/[A-Z]/g, m => `-${m.toLowerCase()}`)}: ${value}`)
-        .join('; ');
-}
-
-const preCodeStyle: Partial<CSSStyleDeclaration> = {
-    color: "#c5c8c6",
-    background: "#1d1f21",
-    textShadow: "0 1px rgba(0, 0, 0, 0.3)",
-    fontFamily: "Inconsolate, Monaco, Consolas, 'Courier New', Courier, monospace",
-    direction: "ltr",
-    textAlign: "left",
-    whiteSpace: "pre",
-    wordSpacing: "normal",
-    wordBreak: "normal",
-    lineHeight: "1.5",
-    tabSize: "4",
-    hyphens: "none",
-}
-
-const preStyle: Partial<CSSStyleDeclaration> = {
-    padding: "1em",
-    margin: ".5em 0",
-    overflow: "auto",
-    borderRadius: "0.3em",
 }

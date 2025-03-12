@@ -1,5 +1,6 @@
-import { Flashlight } from "./Flashlight";
-import { JavascriptLanguage } from "./languages/JavaScript";
+import { Flashlight } from "@/Flashlight";
+import { JavaScript } from "@/languages/JavaScript";
+import { Python } from "@/languages/Python";
 
 export default Flashlight;
-export { JavascriptLanguage };
+export { JavaScript, Python };

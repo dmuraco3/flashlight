@@ -1,11 +1,11 @@
 {
-  "name": "flashlight",
+  "name": "flashlightjs",
   "type": "module",
   "version": "1.0.0",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "description": "",
+  "description": "Lightweight, lightning quick, syntax highlighting.",
   "exports": {
     "types": "./dist/index.d.ts",
     "import": "./dist/index.js",
@@ -19,16 +19,22 @@
     "dist"
   ],
   "keywords": [
-    "bun"
+    "syntax",
+    "highlight",
+    "highlighter",
+    "highlighting",
+    "syntax highlight",
+    "syntax highlighter",
+    "syntax highlighting"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/wobsoriano/pkg-name#readme",
+  "homepage": "https://github.com/dmuraco3/flashlight#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wobsoriano/pkg-name.git"
+    "url": "git+https://github.com/dmuraco3/flashlight.git"
   },
-  "bugs": "https://github.com/wobsoriano/pkg-name/issues",
-  "author": "Robert Soriano <sorianorobertc@gmail.com>",
+  "bugs": "https://github.com/dmuraco3/flashlight/issues",
+  "author": "Dylan Muraco <dylanjmuraco@gmail.com>",
   "devDependencies": {
     "bun-plugin-dts": "^0.3.0",
     "@types/bun": "^1.1.10"

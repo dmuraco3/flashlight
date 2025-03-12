@@ -1,21 +1,14 @@
-import { Language, Token } from "../Flashlight";
-
-export enum JavaScriptTokenType {
-    WhiteSpace,
-    LineTerminator,
-    Comment,
-    Identifier,
-    Keyword,
-    StringLiteral,
-    NumberLiteral,
-    RegexLiteral,
-    Operator,
-}
+import type { Language, Token } from "../Flashlight";
 
 export class JavaScriptToken implements Token {
-    constructor(public tokenType: Token["tokenType"], public tokenValue: string) {
-
+    constructor(
+        public tokenType: Token["tokenType"],
+        public tokenValue: string,
+        public parentToken?: JavaScriptToken,
+        public childrenTokens?: JavaScriptToken[]
+    ) {
     }
+
 }
 
 export enum JavaScriptTokenizerState {
@@ -34,7 +27,7 @@ export const JavaScriptReservedKeywords = <const>[
     'typeof', 'var', 'void', 'while', 'with', 'yield'
 ];
 
-export class JavascriptLanguage implements Language {
+export class JavaScript implements Language {
     public name: string = "JavaScript";
 
     private tokenizer = new JavaScriptTokenizer();
@@ -50,9 +43,10 @@ export class JavascriptLanguage implements Language {
 export class JavaScriptTokenizer {
     private state: JavaScriptTokenizerState = JavaScriptTokenizerState.Default;
     private tokens: JavaScriptToken[] = [];
-    private currentToken: string = "";
+    private buffer: string = "";
     private readPosition: number = 0;
     private code: string = "";
+    private currentToken: JavaScriptToken | undefined = undefined;
 
     tokenize(code: string) {
         this.code = code;
@@ -94,66 +88,119 @@ export class JavaScriptTokenizer {
             this.handleWhiteSpace();
         } else if (char === "/" && nextChar === "/") {
             this.state = JavaScriptTokenizerState.InComment;
-            this.currentToken = "//";
+            this.buffer = "//";
+            this.readPosition++; // advance read position by one to account for extra char
         } else if (char === "/" && nextChar === "*") {
             this.state = JavaScriptTokenizerState.InComment;
-            this.currentToken = "/*";
+            this.buffer = "/*";
+            this.readPosition++; // advance read position by one to account for extra char
         } else if (char === "'") {
             this.state = JavaScriptTokenizerState.InString;
-            this.currentToken = "'";
+            this.buffer = "'";
         } else if (char === '"') {
             this.state = JavaScriptTokenizerState.InString;
-            this.currentToken = '"';
+            this.buffer = '"';
         } else if (char === "`") {
             this.state = JavaScriptTokenizerState.InTemplateLiteral;
-            this.currentToken = "`";
+            this.buffer += "`";
+        } else if (char === "}" && this.currentToken) {
+            this.newToken("symbol", char);
+            this.state = JavaScriptTokenizerState.InTemplateLiteral;
         } else if (char.match(/[a-zA-Z_]/)) {
             this.handleIdentifier();
         } else if (char.match(/\d/)) {
             this.handleNumber();
         } else {
-            this.tokens.push(new JavaScriptToken("operator", char));
+            this.newToken("operator", char);
         }
     }
 
     private handleStringState(char: string) {
-        this.currentToken += char;
-        if (char === this.currentToken[0]) {
-            this.tokens.push(new JavaScriptToken("string", this.currentToken)); // TODO: add styles
+        this.buffer += char;
+        if (char === this.buffer[0]) {
+            this.newToken("string", this.buffer);
             this.state = JavaScriptTokenizerState.Default;
-            this.currentToken = "";
+            this.buffer = "";
         }
     }
 
     private handleCommentState(char: string, nextChar: string) {
-        this.currentToken += char;
-        if (this.currentToken.startsWith("//") && char === "\n") {
-            this.tokens.push(new JavaScriptToken("comment", this.currentToken)); // TODO: add styles
+        this.buffer += char;
+        if (this.buffer.startsWith("//") && (char === "\n" || nextChar === "")) {
+            this.newToken("comment", this.buffer)
             this.state = JavaScriptTokenizerState.Default;
-            this.currentToken = "";
-        } else if (this.currentToken.startsWith("/*") && char === "*" && nextChar === "/") {
-            this.currentToken += "/";
-            this.tokens.push(new JavaScriptToken("comment", this.currentToken));
+            this.buffer = "";
+        } else if (this.buffer.startsWith("/*") && char === "*" && nextChar === "/") {
+            this.buffer += "/";
+            this.newToken("comment", this.buffer);
             this.state = JavaScriptTokenizerState.Default;
-            this.currentToken = "";
+            this.buffer = "";
         }
     }
 
     private handleRegexState(char: string) {
-        this.currentToken += char;
+        this.buffer += char;
         if (char === "/") {
-            this.tokens.push(new JavaScriptToken("regex", this.currentToken));
+            this.newToken("regex", this.buffer);
             this.state = JavaScriptTokenizerState.Default;
-            this.currentToken = "";
+            this.buffer = "";
         }
     }
 
     private handleTemplateLiteralState(char: string) {
-        this.currentToken += char;
-        if (char === "`") {
-            this.tokens.push(new JavaScriptToken("string", this.currentToken)); // TODO: add styles
+        /**
+         * Template -> TemplateNoSub | TemplateSub
+         * TemplateNoSub -> ` ~(`)* `
+         * TemplateSub -> ` ( ~(`) | Substition)* `
+         * Substitution -> $ { CommonToken* }
+         */
+
+        if (char == "$") {
+            console.log("found $")
+            const lookahead = this.lookahead(1);
+            if (lookahead == "{") {
+                console.log("found ${")
+                this.readPosition++;
+
+                const token = new JavaScriptToken("string", this.buffer); // `Hello
+                this.buffer = "";
+
+                if (this.currentToken) {
+                    token.parentToken = this.currentToken;
+                    if (!this.currentToken.childrenTokens) this.currentToken.childrenTokens = [token]
+                    else this.currentToken.childrenTokens.push(token)
+                } else {
+                    this.tokens.push(token)
+                }
+                this.currentToken = token;
+                if (!this.currentToken.childrenTokens) this.currentToken.childrenTokens = [new JavaScriptToken("symbol", "${")];
+                else this.currentToken.childrenTokens.push(new JavaScriptToken("symbol", "${"));
+                this.state = JavaScriptTokenizerState.Default;
+
+            } else {
+                this.buffer += char;
+            }
+        } else if (char === "`") {
+            this.buffer += char;
+            const token = new JavaScriptToken("string", this.buffer);
+            this.buffer = "";
+
+            if (this.currentToken) {
+                if (this.currentToken.parentToken) {
+                    if (this.currentToken.parentToken.childrenTokens) this.currentToken.parentToken.childrenTokens.push(token);
+                    else this.currentToken.parentToken.childrenTokens = [token]
+                } else {
+                    this.tokens.push(token);
+                }
+
+                this.currentToken = this.currentToken.parentToken;
+            } else {
+                this.newToken("string", this.buffer);
+            }
             this.state = JavaScriptTokenizerState.Default;
-            this.currentToken = "";
+            this.buffer = "";
+        } else {
+            this.buffer += char;
         }
     }
 
@@ -165,8 +212,22 @@ export class JavaScriptTokenizer {
 
         this.readPosition--;
 
-        const type: Token["tokenType"] = identifier in JavaScriptReservedKeywords ? "keyword" : "variable";
-        this.tokens.push(new JavaScriptToken(type, identifier)); // TODO: add styles
+        // Check for a parenthesis after the identifier without modifying readPosition
+        let lookAheadPos = this.readPosition + 1;
+        let isFunction = false;
+
+        // Skip any whitespace
+        while (lookAheadPos < this.code.length && this.code[lookAheadPos].match(/\s/)) {
+            lookAheadPos++;
+        }
+
+        // Check if the next non-whitespace character is an opening parenthesis
+        if (lookAheadPos < this.code.length && this.code[lookAheadPos] === '(') {
+            isFunction = true;
+        }
+
+        const type: Token["tokenType"] = JavaScriptReservedKeywords.includes(identifier as any) ? "keyword" : isFunction ? "function" : "variable";
+        this.newToken(type, identifier);
     }
 
     private handleNumber() {
@@ -175,24 +236,33 @@ export class JavaScriptTokenizer {
             number += this.code[this.readPosition++];
         }
         this.readPosition--;
-        this.tokens.push(new JavaScriptToken("number", number)); // TODO: add styles
+        this.newToken("number", number);
     }
 
     private handleWhiteSpace() {
         let whitespace = "";
         while (this.readPosition < this.code.length && this.code[this.readPosition].match(/\s/)) {
-            const curChar = this.code[this.readPosition++];
-            if (curChar.match(/\n/)) {
-                whitespace += "<br>";
-            } else if (curChar.match(/[ ]/)) {
-                whitespace += "&nbsp;"
-            } else if (curChar.match(/\t/)) {
-                whitespace += "&#9;"
-            } else {
-                whitespace += curChar
-            }
+            whitespace += this.code[this.readPosition++];
         }
         this.readPosition--;
-        this.tokens.push(new JavaScriptToken("symbol", whitespace))
+        this.newToken("whitespace", whitespace);
+    }
+
+    private lookahead(distance: number) {
+        let buffer = "";
+        for (let i = 1; i <= distance; i++) {
+            buffer += this.code.charAt(this.readPosition + i);
+        }
+        return buffer;
+    }
+
+    private newToken(tokenType: Token["tokenType"], tokenValue: Token["tokenValue"]) {
+        const token = new JavaScriptToken(tokenType, tokenValue, this.currentToken);
+        if (this.currentToken) {
+            if (!this.currentToken.childrenTokens) this.currentToken.childrenTokens = [token];
+            else this.currentToken.childrenTokens.push(token);
+        } else {
+            this.tokens.push(token);
+        }
     }
 }

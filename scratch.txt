@@ -1,0 +1,57 @@
+function greet(name) {
+    const greeting = `Hello ${name}!`;
+    console.log(greeting);
+}
+
+program
+-> function_declaration
+  -> KEYWORD function
+  -> VARIABLE greet
+  -> SYMBOL (
+  -> VARIABLE name
+  -> SYMBOL )
+  -> block
+    -> SYMBOL {
+    -> declare_assign
+      -> KEYWORD const
+      -> VARIABLE greeting
+      -> SYMBOL =
+      -> template
+        -> TEMPLATE_CHARS Hello 
+        -> template_substitution
+          -> VARIABLE name
+        -> TEMPLATE_CHARS !
+    -> SYMBOL }
+
+
+
+
+
+
+function greet(name) {
+    const greeting = `Hello ${ `${name == "Dylan" && "King "}${name}`  }!`;
+}
+
+program
+-> function_declaration
+  -> KEYWORD function
+  -> VARIABLE greet
+  -> SYMBOL (
+  -> VARIABLE name
+  -> SYMBOL )
+  -> block
+    -> SYMBOL {
+    -> declare_assign
+      -> KEYWORD const
+      -> VARIABLE greeting
+      -> SYMBOL =
+      -> template
+        -> TEMPLATE_CHARS Hello 
+        -> template_substitution
+          -> template
+            -> template_substitution
+              -> conditionary (&&)
+                -> 
+
+        -> TEMPLATE_CHARS !
+    -> SYMBOL }
