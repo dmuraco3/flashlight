@@ -1,9 +1,9 @@
 import { describe, it, expect } from "bun:test";
-import { JavaScript } from "../../src";
-import { Flashlight, type Token } from "../../src/Flashlight";
+import { JavaScript } from "../../../src";
+import { Flashlight, type Token } from "../../../src/Flashlight";
 import type { JavaScriptToken } from "@/languages/JavaScript";
 
-describe("should", () => {
+describe("JavaScript Tokenizer Test", () => {
     it("Common", () => {
         const language = new JavaScript();
         const code = `function hello() {\n\tconst name = "World";\n\tconsole.log("Hello " + name);\n\treturn 42;\n}`;

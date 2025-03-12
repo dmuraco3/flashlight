@@ -1,4 +1,4 @@
-import type { LanguageStyle } from "@/languages/Language";
+import type { LanguageStyle } from "./index";
 
 export const AtomDark: LanguageStyle = {
     tokenStyles: {
@@ -17,10 +17,17 @@ export const AtomDark: LanguageStyle = {
         variable: { color: "#C6C5FE" },
         constant: { color: "#99CC99" },
         property: { color: "#96CBFE" },
-        punctation: { color: "#c5c8c6" },
-        important: { color: "#fd971f", fontWeight: "bold" },
+        punctation: { color: "#C5C8C6" },
+        important: { color: "#FD971F", fontWeight: "bold" },
         comment: { color: "#7C7C7C" },
-        whitespace: {}
+        whitespace: {},
+        tag: { color: "#96CBFE" },
+        attributeName: { color: "#A8FF60" },
+        attributeValue: { color: "#F9EE98" },
+        prolog: { color: "#7C7C7C" },
+        doctype: { color: "#7C7C7C" },
+        cdata: { color: "#7C7C7C" },
+        entity: { color: "#FFFFB6" }
     },
     wrapperStyles: {
         code: {

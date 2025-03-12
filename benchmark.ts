@@ -30,7 +30,7 @@ function benchmarkFlashlight(code: string) {
     const highlightedCode = flashlight.highlight(code, JavaScript);
     const end = performance.now();
 
-    console.log("Time to highlight code with highlightjs: " + (end - start) + "ms");
+    console.log("Time to highlight code with flashlightjs: " + (end - start) + "ms");
 }
 
 async function main() {

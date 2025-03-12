@@ -148,13 +148,6 @@ export class JavaScriptTokenizer {
     }
 
     private handleTemplateLiteralState(char: string) {
-        /**
-         * Template -> TemplateNoSub | TemplateSub
-         * TemplateNoSub -> ` ~(`)* `
-         * TemplateSub -> ` ( ~(`) | Substition)* `
-         * Substitution -> $ { CommonToken* }
-         */
-
         if (char == "$") {
             const lookahead = this.lookahead(1);
             if (lookahead == "{") {

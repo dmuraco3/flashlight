@@ -118,8 +118,8 @@ Flashlight aims to address these problems by doing the following:
 
 -   [x] JavaScript
 -   [x] Python
+-   [x] HTML
 -   [ ] TypeScript
--   [ ] HTML
 -   [ ] CSS
 -   [ ] JSX
 -   [ ] TSX
