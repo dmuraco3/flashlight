@@ -156,10 +156,8 @@ export class JavaScriptTokenizer {
          */
 
         if (char == "$") {
-            console.log("found $")
             const lookahead = this.lookahead(1);
             if (lookahead == "{") {
-                console.log("found ${")
                 this.readPosition++;
 
                 const token = new JavaScriptToken("string", this.buffer); // `Hello

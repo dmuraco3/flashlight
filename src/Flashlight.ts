@@ -1,4 +1,6 @@
 import type { LanguageStyle } from "@/languages/Language";
+import { AtomDark } from "./styles";
+import { JavaScript } from "./languages";
 
 export interface Token {
     tokenType: typeof TOKEN_TYPES[number];
@@ -51,6 +53,7 @@ export type TokenType = typeof TOKEN_TYPES[number];
  */
 export class Flashlight {
     private languages: Language[];
+    private defaultStyle: LanguageStyle;
 
     /**
      * Creates a new Flashlight instance.
@@ -58,8 +61,9 @@ export class Flashlight {
      * @param languageClasses - An array of Language class constructors to be instantiated.
      * @param style - The styling configuration for syntax highlighting.
      */
-    public constructor(languageClasses: (new () => Language)[], public style: LanguageStyle) {
+    public constructor(languageClasses: (new () => Language)[] = [JavaScript], defaultStyle: LanguageStyle = AtomDark) {
         this.languages = languageClasses.map(LanguageClass => new LanguageClass());
+        this.defaultStyle = defaultStyle;
     }
 
     /**
@@ -95,13 +99,13 @@ export class Flashlight {
      * @returns A Promise that resolves to an HTML string with syntax highlighting applied
      * @throws {Error} If the specified language is not supported
      */
-    public async highlight(code: string, language: Flashlight["languages"][number]["name"]): Promise<string> {
-        const wantedLanguage = this.languages.find(lang => { if (lang.name === language) return lang });
+    public async highlight(code: string, language: new () => Language, style: LanguageStyle = this.defaultStyle): Promise<string> {
+        const wantedLanguage = this.languages.find(lang => { if (lang.name == language.name) return lang });
         if (!wantedLanguage) throw new Error(`ERROR: Unknown Language "${language}`);
 
         const tokens = wantedLanguage.tokenize(code);
 
-        return this.toStyledHTML(tokens);
+        return this.toStyledHTML(tokens, style);
     }
 
     private async parseCSSStyleDeclaration(styles: Partial<CSSStyleDeclaration>): Promise<string> {
@@ -120,11 +124,11 @@ export class Flashlight {
         return output;
     }
 
-    private async toStyledHTML(tokens: Token[]): Promise<string> {
+    private async toStyledHTML(tokens: Token[], style: LanguageStyle): Promise<string> {
         tokens = await this.flattenTokenTrees(tokens);
-        const output = tokens.map((token: Token) => `<span style="${this.parseCSSStyleDeclaration(this.style.tokenStyles[token.tokenType])}">${token.tokenValue}</span>`).join("");
-        const preStyles = this.parseCSSStyleDeclaration(this.style.wrapperStyles.pre);
-        const codeStyles = this.parseCSSStyleDeclaration(this.style.wrapperStyles.code);
+        const output = tokens.map(async (token: Token) => `<span style="${await this.parseCSSStyleDeclaration(style.tokenStyles[token.tokenType])}">${token.tokenValue}</span>`).join("");
+        const preStyles = await this.parseCSSStyleDeclaration(style.wrapperStyles.pre);
+        const codeStyles = await this.parseCSSStyleDeclaration(style.wrapperStyles.code);
         return `<pre style="${preStyles}"><code style="${codeStyles}">${output}</code></pre>`;
     }
 }

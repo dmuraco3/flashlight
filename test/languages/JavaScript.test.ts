@@ -2,7 +2,6 @@ import { describe, it, expect } from "bun:test";
 import { JavaScript } from "../../src";
 import { Flashlight, type Token } from "../../src/Flashlight";
 import type { JavaScriptToken } from "@/languages/JavaScript";
-import AtomDark from "@/styles/AtomDark";
 
 describe("should", () => {
     it("Common", () => {
@@ -114,9 +113,5 @@ describe("should", () => {
             { tokenType: "keyword", tokenValue: "const" },
         ]
 
-        const flashlight = new Flashlight([JavaScript], AtomDark);
-
-        const result = flashlight.highlight(code, "JavaScript");
-        console.log(result);
     })
 });

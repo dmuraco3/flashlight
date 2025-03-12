@@ -13,7 +13,8 @@
   },
   "scripts": {
     "build": "bun run build.ts",
-    "prepublishOnly": "bun run build"
+    "prepublishOnly": "bun run build",
+    "benchmark": "bun run benchmark.ts"
   },
   "files": [
     "dist"
@@ -36,7 +37,10 @@
   "bugs": "https://github.com/dmuraco3/flashlight/issues",
   "author": "Dylan Muraco <dylanjmuraco@gmail.com>",
   "devDependencies": {
+    "@types/bun": "^1.1.10",
+    "@types/prismjs": "^1.26.5",
     "bun-plugin-dts": "^0.3.0",
-    "@types/bun": "^1.1.10"
+    "highlight.js": "^11.11.1",
+    "prismjs": "^1.30.0"
   }
 }
