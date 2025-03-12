@@ -16,6 +16,8 @@ Easy, efficient, and lightweight syntax highlighting.
 
 # What is this?
 
+Flashlight is a modern syntax highlighter fast, efficient, and lightweight.
+
 <!-- # When should I use this? -->
 
 <!-- # Playground -->
@@ -41,28 +43,20 @@ import Flashlight, { JavaScript } from "flashlight";
 
 const highlighter = new Flashlight([JavaScript]);
 
-const code = `function main() {
-    console.log("Hello, World!");
-}`;
+const code = `const x = "Hello, World!";`;
 
 console.log(highlighter.highlight(code, "javascript"));
 /* ^ prints out (the following is prettified for readability):
-<pre class="flashlight">
-    <code>
-        <span class="js-keyword">function</span>
-        <span class="js-func-id">main</span>
-        <span class="js-lparen">(</span>
-        <span class="js-rparen">)</span>
-        <span class="js-lbrace">{</span>
-        <br>
-        <span class="js-var-id">console</span>
-        <span class="js-func-id">log</span>
-        <span class="js-lparen">(</span>
-        <span class="js-string">"Hello, World!"</span>
-        <span class="js-rparen">)</span>
-        <span class="js-semi">;</span>
-        <br>
-        <span class="js-rbrace">}</span>
+<pre style="...">
+    <code style="...">
+        <span style="...">const</span>
+        <span> </span>
+        <span style="...">x</span>
+        <span> </span>
+        <span style="...">=</span>
+        <span> </span>
+        <span style="...">"Hello, World!"</span>
+        <span style="...">;</span>
     </code>
 </pre>
 */
