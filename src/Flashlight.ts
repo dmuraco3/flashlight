@@ -1,6 +1,6 @@
 import type { LanguageStyle } from "@/styles";
-import { AtomDark } from "./styles";
-import { JavaScript } from "./languages";
+import { AtomDark } from "@/styles";
+import { JavaScript } from "@/languages";
 
 export interface Token {
     tokenType: (typeof TOKEN_TYPES)[number];
@@ -59,7 +59,7 @@ export type TokenType = (typeof TOKEN_TYPES)[number];
  * const highlighted = await flashlight.highlight('const x = 5;', 'JavaScript');
  * ```
  */
-export class Flashlight {
+export default class Flashlight {
     private languages: Language[];
     private defaultStyle: LanguageStyle;
 

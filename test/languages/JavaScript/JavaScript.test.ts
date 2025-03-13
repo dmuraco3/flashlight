@@ -1,7 +1,6 @@
 import { describe, it, expect } from "bun:test";
-import { JavaScript } from "../../../src";
-import { Flashlight, type Token } from "../../../src/Flashlight";
-import type { JavaScriptToken } from "@/languages/JavaScript";
+import { JavaScript, JavaScriptToken } from "@/languages";
+import { type Token } from "../../../src/Flashlight";
 
 describe("JavaScript Tokenizer Test", () => {
     it("Common", () => {

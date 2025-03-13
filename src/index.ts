@@ -1,3 +1,3 @@
-export * from "@/languages";
-export * from "@/styles";
-export { Flashlight } from "@/Flashlight";
+import Flashlight from "@/Flashlight"
+
+export default Flashlight;

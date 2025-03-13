@@ -10,9 +10,10 @@
     "noImplicitAny": true,
     "allowJs": true,
     "noEmit": true,
+    "declaration": true,
     "outDir": "dist",
     "resolveJsonModule": true,
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": false,
     "paths": {
       "@/*": ["./src/*"]
     }

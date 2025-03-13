@@ -1,4 +1,4 @@
-import { Flashlight } from "@/Flashlight";
+import Flashlight from "@/Flashlight";
 import { HTML } from "@/languages/HTML";
 import { describe, it, expect } from "bun:test";
 

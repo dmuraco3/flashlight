@@ -3,7 +3,8 @@ import javascript from "highlight.js/lib/languages/javascript";
 
 import Prism from "prismjs";
 
-import { Flashlight, JavaScript, AtomDark } from "@/index";
+import Flashlight from "./dist";
+import { JavaScript } from "./dist/languages";
 
 function benchmarkHighlightJS(code: string) {
     hljs.registerLanguage("javascript", javascript);
