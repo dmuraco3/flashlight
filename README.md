@@ -92,9 +92,9 @@ const highlightedCode = flashlight.highlight(code, "Python");
 
 | Library      | Time (ms) |
 | ------------ | --------- |
-| highlight.js | 14.05     |
-| prismjs      | 5.42      |
 | flashlight   | 2.34      |
+| prismjs      | 5.42      |
+| highlight.js | 14.05     |
 
 These benchmarks show flashlight is approximately 6x faster than highlight.js and 2x faster than prismjs when highlighting equivalent code samples.
 
