@@ -14,11 +14,6 @@
     "highlight.js": "^11.11.1",
     "prismjs": "^1.30.0"
   },
-  "bugs": "https://github.com/dmuraco3/flashlight/issues",
-  "description": "Lightweight, lightning quick, syntax highlighting.",
-  "files": [
-    "dist"
-  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -33,6 +28,11 @@
       "default": "./dist/languages/index.js"
     }
   },
+  "bugs": "https://github.com/dmuraco3/flashlight/issues",
+  "description": "Lightweight, lightning quick, syntax highlighting.",
+  "files": [
+    "dist"
+  ],
   "homepage": "https://github.com/dmuraco3/flashlight#readme",
   "keywords": [
     "syntax",
@@ -50,8 +50,5 @@
     "benchmark": "bun run benchmark.ts"
   },
   "type": "module",
-  "types": "./dist/index.d.ts",
-  "dependencies": {
-    "flashlightjs": "^0.0.3"
-  }
+  "types": "./dist/index.d.ts"
 }
