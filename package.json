@@ -1,24 +1,39 @@
 {
   "name": "flashlightjs",
-  "type": "module",
-  "version": "0.0.0",
+  "version": "0.0.4",
+  "author": "Dylan Muraco <dylanjmuraco@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dmuraco3/flashlight.git"
+  },
   "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "devDependencies": {
+    "@types/bun": "1.1.10",
+    "@types/prismjs": "^1.26.5",
+    "bun-plugin-dts": "^0.3.0",
+    "highlight.js": "^11.11.1",
+    "prismjs": "^1.30.0"
+  },
+  "bugs": "https://github.com/dmuraco3/flashlight/issues",
   "description": "Lightweight, lightning quick, syntax highlighting.",
-  "exports": {
-    "types": "./dist/index.d.ts",
-    "import": "./dist/index.js",
-    "require": "./dist/index.js"
-  },
-  "scripts": {
-    "build": "bun run build.ts",
-    "prepublishOnly": "bun run build",
-    "benchmark": "bun run benchmark.ts"
-  },
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./styles": {
+      "types": "./dist/styles/index.d.ts",
+      "default": "./dist/styles/index.js"
+    },
+    "./languages": {
+      "types": "./dist/languages/index.d.ts",
+      "default": "./dist/languages/index.js"
+    }
+  },
+  "homepage": "https://github.com/dmuraco3/flashlight#readme",
   "keywords": [
     "syntax",
     "highlight",
@@ -29,18 +44,14 @@
     "syntax highlighting"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/dmuraco3/flashlight#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dmuraco3/flashlight.git"
+  "scripts": {
+    "build": "bun run build.ts",
+    "prepublishOnly": "bun run build",
+    "benchmark": "bun run benchmark.ts"
   },
-  "bugs": "https://github.com/dmuraco3/flashlight/issues",
-  "author": "Dylan Muraco <dylanjmuraco@gmail.com>",
-  "devDependencies": {
-    "@types/bun": "^1.1.10",
-    "@types/prismjs": "^1.26.5",
-    "bun-plugin-dts": "^0.3.0",
-    "highlight.js": "^11.11.1",
-    "prismjs": "^1.30.0"
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "dependencies": {
+    "flashlightjs": "^0.0.3"
   }
 }

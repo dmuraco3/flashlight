@@ -3,8 +3,9 @@ import javascript from "highlight.js/lib/languages/javascript";
 
 import Prism from "prismjs";
 
-import Flashlight from "./dist";
-import { JavaScript } from "./dist/languages";
+import Flashlight from "flashlightjs";
+import { JavaScript } from "flashlightjs/languages";
+import { AtomDark } from "flashlightjs/styles";
 
 function benchmarkHighlightJS(code: string) {
     hljs.registerLanguage("javascript", javascript);
@@ -25,7 +26,7 @@ function benchmarkPrism(code: string) {
 }
 
 function benchmarkFlashlight(code: string) {
-    const flashlight = new Flashlight();
+    const flashlight = new Flashlight([JavaScript], AtomDark);
 
     const start = performance.now();
     const highlightedCode = flashlight.highlight(code, JavaScript);
