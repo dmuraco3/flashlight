@@ -1,87 +1,66 @@
-// import type { BuildConfig } from 'bun'
-// import dts from 'bun-plugin-dts'
+import { rollup } from "rollup";
+import typescript from "@rollup/plugin-typescript";
+import resolve from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
+import terser from "@rollup/plugin-terser";
+import dts from "rollup-plugin-dts";
+import { rm } from "node:fs/promises";
 
-// const defaultBuildConfig: BuildConfig = {
-//   entrypoints: ['./src/index.ts', './src/languages/index.ts', './src/styles/index.ts'],
-//   outdir: './dist'
-// }
+const entryPoints = ["src/index.ts", "src/languages/index.ts", "src/styles/index.ts"];
 
-// await Promise.all([
-//   // Build JavaScript files
-//   Bun.build({
-//     ...defaultBuildConfig,
-//     format: 'esm',
-//     naming: "[dir]/[name].js",
-//     minify: true
-//   }),
+// Build JavaScript files
+async function buildJS() {
+    const bundle = await rollup({
+        input: entryPoints,
+        plugins: [
+            resolve(), // Resolves node_modules and local imports
+            commonjs(), // Converts CommonJS to ES modules if needed
+            typescript({ tsconfig: "./rollup-tsconfig.json" }),
+            terser({ keep_classnames: true }), // Minifies the JS output
+        ],
+    });
 
-//   // Build type declarations for src/index.ts
-//   Bun.build({
-//     entrypoints: ['./src/index.ts'],
-//     outdir: './dist',
-//     plugins: [dts()],
-//     format: 'esm'
-//   }),
+    await bundle.write({
+        dir: "dist",
+        format: "esm",
+        sourcemap: true,
+        preserveModules: true, // Keeps directory structure intact
+        entryFileNames: "[name].js", // Outputs the same filenames as in src/
+    });
 
-//   // Build type declarations for src/languages/index.ts
-//   Bun.build({
-//     entrypoints: ['./src/languages/index.ts'],
-//     outdir: './dist',
-//     plugins: [dts()],
-//     format: 'esm'
-//   }),
-
-//   // Build type declarations for src/styles/index.ts
-//   Bun.build({
-//     entrypoints: ['./src/styles/index.ts'],
-//     outdir: './dist',
-//     plugins: [dts()],
-//     format: 'esm'
-//   }),
-// ])
-
-import type { BuildConfig } from 'bun'
-import dts from 'bun-plugin-dts'
-
-const defaultBuildConfig: BuildConfig = {
-  entrypoints: ['./src/index.ts', './src/languages/index.ts', './src/styles/index.ts'],
-  outdir: './dist'
+    await bundle.close();
 }
 
-const entryPoints = ['./src/index.ts', './src/languages/index.ts', './src/styles/index.ts'];
+// Build TypeScript declarations
+async function buildDTS() {
+    const dtsBundle = await rollup({
+        input: entryPoints,
+        plugins: [dts()],
+    });
 
-// await Promise.all([
-//   Bun.build({
-//     ...defaultBuildConfig,
-//     format: 'esm',
-//     naming: "[dir]/[name].js",
-//     minify: true
-//   })
-// ])
+    await dtsBundle.write({
+        dir: "dist",
+        format: "es",
+        preserveModules: true, // Keeps directory structure for .d.ts files
+        entryFileNames: "[name].d.ts",
+    });
 
-await Promise.all([
-  Bun.build({
-    ...defaultBuildConfig,
-    format: 'esm',
-    naming: "[dir]/[name].js",
-    minify: true,
-    splitting: true
-  }),
+    await dtsBundle.close();
+}
 
-  Bun.build({
-    entrypoints: ["./src/index.ts"],
-    plugins: [dts()],
-    format: 'esm',
-    naming: "[dir]/[name].js",
-    outdir: "./dist",
-    splitting: true,
-  }),
+async function cleanDist() {
+    await rm("dist", { recursive: true, force: true });
+}
 
-  Bun.build({
-    entrypoints: ["./src/languages/index.ts", "./src/styles/index.ts"],
-    plugins: [dts()],
-    format: 'esm',
-    naming: "[dir]/[name].js",
-    splitting: true
-  }),
-])
+async function build() {
+    await cleanDist();
+    await buildJS();
+    await buildDTS();
+}
+
+try {
+    await build();
+} catch (error) {
+    console.error(error);
+    process.exit(1);
+}

@@ -1,8 +1,12 @@
-import type { TokenType } from "@/Flashlight";
+import type { TokenType } from "../Flashlight";
 
-export * from "./AtomDark";
+import VSCode from "./VSCode";
+import VSCodeDark from "./VSCodeDark";
+import AtomDark from "./AtomDark";
+export { VSCode, VSCodeDark, AtomDark };
 
 export type LanguageStyle = {
+    name: string,
     tokenStyles: {
         [tokenType in Exclude<TokenType, "text">]: Partial<CSSStyleDeclaration>;
     };

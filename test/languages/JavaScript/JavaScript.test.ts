@@ -102,15 +102,15 @@ describe("JavaScript Tokenizer Test", () => {
 
         console.log(JSON.stringify(tokens, getCircularReplacer(), 4))
 
-        const expected: Token[] = [
-            { tokenType: "keyword", tokenValue: "const" },
-            { tokenType: "whitespace", tokenValue: " " },
-            { tokenType: "keyword", tokenValue: "greeting" },
-            { tokenType: "keyword", tokenValue: "const" },
-            { tokenType: "keyword", tokenValue: "const" },
-            { tokenType: "keyword", tokenValue: "const" },
-            { tokenType: "keyword", tokenValue: "const" },
-        ]
+        // const expected: Token[] = [
+        //     { tokenType: "keyword", tokenValue: "const" },
+        //     { tokenType: "whitespace", tokenValue: " " },
+        //     { tokenType: "keyword", tokenValue: "greeting" },
+        //     { tokenType: "keyword", tokenValue: "const" },
+        //     { tokenType: "keyword", tokenValue: "const" },
+        //     { tokenType: "keyword", tokenValue: "const" },
+        //     { tokenType: "keyword", tokenValue: "const" },
+        // ]
 
     })
 });

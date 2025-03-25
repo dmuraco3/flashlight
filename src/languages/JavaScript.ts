@@ -28,7 +28,7 @@ export const JavaScriptReservedKeywords = <const>[
 ];
 
 export class JavaScript implements Language {
-    public name: string = "JavaScript";
+    public readonly name = "JavaScript";
 
     private tokenizer = new JavaScriptTokenizer();
 

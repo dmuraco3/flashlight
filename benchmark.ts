@@ -11,7 +11,7 @@ function benchmarkHighlightJS(code: string) {
     hljs.registerLanguage("javascript", javascript);
 
     const start = performance.now();
-    const highlightedCode = hljs.highlight(code, { language: "javascript" });
+    hljs.highlight(code, { language: "javascript" });
     const end = performance.now();
 
     console.log("Time to highlight code with highlight.js: " + (end - start) + "ms")
@@ -19,7 +19,7 @@ function benchmarkHighlightJS(code: string) {
 
 function benchmarkPrism(code: string) {
     const start = performance.now();
-    const highlightedCode = Prism.highlight(code, Prism.languages.javascript, "javascript");
+    Prism.highlight(code, Prism.languages.javascript, "javascript");
     const end = performance.now();
 
     console.log("Time to highlight code with prismjs: " + (end - start) + "ms");
@@ -29,7 +29,7 @@ function benchmarkFlashlight(code: string) {
     const flashlight = new Flashlight([JavaScript], AtomDark);
 
     const start = performance.now();
-    const highlightedCode = flashlight.highlight(code, JavaScript);
+    flashlight.highlight(code, JavaScript);
     const end = performance.now();
 
     console.log("Time to highlight code with flashlightjs: " + (end - start) + "ms");

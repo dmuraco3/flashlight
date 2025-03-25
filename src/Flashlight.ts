@@ -1,6 +1,6 @@
-import type { LanguageStyle } from "@/styles";
-import { AtomDark } from "@/styles";
-import { JavaScript } from "@/languages";
+import type { LanguageStyle } from "./styles/index";
+import AtomDark from "./styles/AtomDark";
+import { JavaScript } from "./languages/JavaScript";
 
 export interface Token {
     tokenType: (typeof TOKEN_TYPES)[number];
@@ -10,7 +10,7 @@ export interface Token {
 }
 
 export interface Language {
-    name: string;
+    readonly name: string;
     tokenize: (code: string) => Token[];
 }
 

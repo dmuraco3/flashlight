@@ -1,6 +1,7 @@
 import type { LanguageStyle } from "./index";
 
-export const AtomDark: LanguageStyle = {
+const AtomDark: LanguageStyle = {
+    name: "AtomDark",
     tokenStyles: {
         string: { color: "#A8FF60" },
         number: { color: "#FF73FD" },
@@ -64,3 +65,5 @@ export const AtomDark: LanguageStyle = {
         }
     }
 };
+
+export default AtomDark;

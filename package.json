@@ -1,6 +1,6 @@
 {
   "name": "flashlightjs",
-  "version": "0.0.4",
+  "version": "0.0.12",
   "author": "Dylan Muraco <dylanjmuraco@gmail.com>",
   "repository": {
     "type": "git",
@@ -12,7 +12,14 @@
     "@types/prismjs": "^1.26.5",
     "bun-plugin-dts": "^0.3.0",
     "highlight.js": "^11.11.1",
-    "prismjs": "^1.30.0"
+    "prismjs": "^1.30.0",
+    "rollup": "^4.36.0",
+    "@rollup/plugin-commonjs": "^28.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "rollup-plugin-dts": "^6.1.1",
+    "tslib": "^2.8.1"
   },
   "exports": {
     ".": {

@@ -1,0 +1,49 @@
+Create a TypeScript object from the supplied VSCode theme style JSON object that satisfies the TypeScript type that I will also supply.
+
+TypeScript Type:
+```typescript
+export const TOKEN_TYPES = [
+    "text",
+    "keyword",
+    "builtin",
+    "className",
+    "function",
+    "boolean",
+    "number",
+    "string",
+    "char",
+    "symbol",
+    "regex",
+    "url",
+    "operator",
+    "variable",
+    "constant",
+    "property",
+    "punctation",
+    "important",
+    "comment",
+    "whitespace",
+    "tag",
+    "attributeName",
+    "attributeValue",
+    "prolog",
+    "doctype",
+    "cdata",
+    "entity"
+] as const;
+export type TokenType = (typeof TOKEN_TYPES)[number];
+export type LanguageStyle = {
+    tokenStyles: {
+        [tokenType in Exclude<TokenType, "text">]: Partial<CSSStyleDeclaration>;
+    };
+    wrapperStyles: {
+        [wrapperType in "pre" | "code"]: Partial<CSSStyleDeclaration>;
+    };
+};
+```
+
+VSCode Light Theme JSON Object:
+```json
+
+
+```
