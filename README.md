@@ -76,6 +76,23 @@ const flashlight = new Flashlight([JavaScript], AtomDark);
 const highlightedCode = flashlight.highlight(code, JavaScript);
 ```
 
+## Highlight JavaScript Code With an Alternative Style
+
+```typescript
+import { Flashlight } from "flashlightjs";
+import { JavaScript } from "flashlightjs/languages";
+import { AtomDark, VSCode } from "flashlightjs/styles";
+const code = `function greet(name) {
+    return "Hello, " + name + "!";
+}`;
+
+const flashlight = new Flashlight([JavaScript], AtomDark);
+
+const highlightedCode = flashlight.highlight(code, JavaScript, {
+	style: VSCode
+});
+```
+
 ## Highlight Python Code With the Flashlight Class
 
 ```typescript
@@ -90,6 +107,16 @@ const code = `def greet(name):
 const flashlight = new Flashlight([Python], AtomDark);
 
 const highlightedCode = flashlight.highlight(code, Python);
+```
+
+## Return Tokens Instead of HTML
+
+```typescript
+import { Flashlight } from "flashlightjs";
+
+const code = `function main() {
+    console.log("Hello, World!");
+}
 ```
 
 # Benchmarks

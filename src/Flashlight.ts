@@ -9,6 +9,10 @@ export interface Token {
     childrenTokens?: Token[];
 }
 
+export interface StyledToken extends Token {
+    tokenStyle: LanguageStyle["tokenStyles"][keyof LanguageStyle["tokenStyles"]];
+}
+
 export interface Language {
     readonly name: string;
     tokenize: (code: string) => Token[];
@@ -133,7 +137,7 @@ export default class Flashlight {
         code: string,
         language: new () => Language,
         options?: HighlightOptions,
-    ): Promise<string | Token[]> {
+    ): Promise<string | StyledToken[]> {
         const wantedLanguage = this.languages.find((lang) => {
             if (lang.name == language.name) return lang;
         });
@@ -143,7 +147,7 @@ export default class Flashlight {
         const tokens = wantedLanguage.tokenize(code);
 
         if (options?.returnTokens) {
-            return this.flattenTokenTrees(tokens);
+            return this.styleTokens(tokens, options?.style ?? this.defaultStyle);
         }
 
         return this.toStyledHTML(tokens, options?.style ?? this.defaultStyle, wantedLanguage);
@@ -176,6 +180,23 @@ export default class Flashlight {
                     parentToken: undefined,
                 });
                 stack.push(...(cur?.childrenTokens?.toReversed() ?? []))
+            } else { break; }
+        }
+        return output;
+    }
+
+    private async styleTokens(tokens: Token[], style: LanguageStyle): Promise<StyledToken[]> {
+        let output: StyledToken[] = [];
+        let stack = tokens.toReversed();
+        while (stack.length > 0) {
+            const cur = stack.pop();
+            if (cur) {
+                output.push({
+                    tokenType: cur.tokenType,
+                    tokenValue: cur.tokenValue,
+                    tokenStyle: cur.tokenType === "text" ? {} : style.tokenStyles[cur.tokenType],
+                });
+                stack.push(...(cur?.childrenTokens?.toReversed() ?? []));
             } else { break; }
         }
         return output;
