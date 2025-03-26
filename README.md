@@ -44,7 +44,8 @@ _`Note:`_ The default language is JavaScript, and the defult style is AtomDark.
 ## Create a New Flashlight Instance With a Different Language
 
 ```typescript
-import { Flashlight, Python } from "flashlightjs";
+import { Flashlight } from "flashlightjs";
+import { Python } from "flashlightjs/languages";
 
 const flashlight = new Flashlight([Python]);
 ```
@@ -52,7 +53,8 @@ const flashlight = new Flashlight([Python]);
 ## Create a new Flashlight Instance With a Different Style
 
 ```typescript
-import { Flashlight, AtomDark } from "flashlightjs";
+import { Flashlight } from "flashlightjs";
+import { AtomDark } from "flashlightjs/styles";
 
 const flashlight = new Flashlight(undefined, AtomDark);
 ```
@@ -62,20 +64,24 @@ const flashlight = new Flashlight(undefined, AtomDark);
 ## Highlight JavaScript Code With the Flashlight Class
 
 ```typescript
-import { Flashlight, JavaScript, AtomDark } from "flashlightjs";
+import { Flashlight } from "flashlightjs";
+import { JavaScript } from "flashlightjs/languages";
+import { AtomDark } from "flashlightjs/styles";
 const code = `function greet(name) {
     return "Hello, " + name + "!";
 }`;
 
 const flashlight = new Flashlight([JavaScript], AtomDark);
 
-const highlightedCode = flashlight.highlight(code, "JavaScript");
+const highlightedCode = flashlight.highlight(code, JavaScript);
 ```
 
 ## Highlight Python Code With the Flashlight Class
 
 ```typescript
-import { Flashlight, Python, AtomDark } from "flashlightjs";
+import { Flashlight } from "flashlightjs";
+import { Python } from "flashlightjs/languages";
+import { AtomDark } from "flashlightjs/styles";
 
 const code = `def greet(name):
     return "Hello, " + name + "!"
@@ -83,7 +89,7 @@ const code = `def greet(name):
 
 const flashlight = new Flashlight([Python], AtomDark);
 
-const highlightedCode = flashlight.highlight(code, "Python");
+const highlightedCode = flashlight.highlight(code, Python);
 ```
 
 # Benchmarks
