@@ -1,9 +1,10 @@
 import { describe, it, expect } from "bun:test";
-import { JavaScript, JavaScriptToken } from "@/languages";
-import { type Token } from "../../../src/Flashlight";
+import { JavaScript, JavaScriptToken } from "@/languages/JavaScript";
+import Flashlight, { type Token } from "@/Flashlight";
+import { VSCode } from "@/styles";
 
-describe("JavaScript Tokenizer Test", () => {
-    it("Common", () => {
+describe("JavaScript Tokenizer Test", async () => {
+    it("Common", async () => {
         const language = new JavaScript();
         const code = `function hello() {\n\tconst name = "World";\n\tconsole.log("Hello " + name);\n\treturn 42;\n}`;
 
@@ -57,7 +58,7 @@ describe("JavaScript Tokenizer Test", () => {
         expect(tokens).toEqual(expectedTokenSequence);
     });
 
-    it("Single Line Comments", () => {
+    it("Single Line Comments", async () => {
         const language = new JavaScript();
 
         const code = "// test comment";
@@ -70,11 +71,11 @@ describe("JavaScript Tokenizer Test", () => {
         expect(tokens).toEqual(expectedTokens);
     });
 
-    describe("Template Literals", () => {
+    it("Template Literals", async () => {
         const language = new JavaScript();
 
         // Test template literals
-        const code = "`Hello ${ name == 'Dylan' ? 'Bad Boy!' : `Good Boy ${name + 22}`}`";
+        const code = await Bun.file("./test/languages/JavaScript/resources/template_literals.js").text();
         const tokens = language.tokenize(code);
 
         let output = ""
@@ -85,32 +86,7 @@ describe("JavaScript Tokenizer Test", () => {
             stack.push(...(cur?.childrenTokens?.toReversed() ?? []))
         }
 
-        console.log(output);
-
-        const getCircularReplacer = () => {
-            const seen = new WeakSet();
-            return (key: any, value: any) => {
-                if (typeof value === "object" && value !== null) {
-                    if (seen.has(value)) {
-                        return;
-                    }
-                    seen.add(value);
-                }
-                return value;
-            };
-        };
-
-        console.log(JSON.stringify(tokens, getCircularReplacer(), 4))
-
-        // const expected: Token[] = [
-        //     { tokenType: "keyword", tokenValue: "const" },
-        //     { tokenType: "whitespace", tokenValue: " " },
-        //     { tokenType: "keyword", tokenValue: "greeting" },
-        //     { tokenType: "keyword", tokenValue: "const" },
-        //     { tokenType: "keyword", tokenValue: "const" },
-        //     { tokenType: "keyword", tokenValue: "const" },
-        //     { tokenType: "keyword", tokenValue: "const" },
-        // ]
+        expect(output).toBe(code);
 
     })
 });

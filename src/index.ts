@@ -1,3 +1,4 @@
-import Flashlight from "./Flashlight.js";
+import Flashlight from "./Flashlight";
 
+export * from "./Flashlight";
 export default Flashlight;

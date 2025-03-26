@@ -47,6 +47,17 @@ export const TOKEN_TYPES = [
 export type TokenType = (typeof TOKEN_TYPES)[number];
 
 /**
+ * Options for syntax highlighting.
+ * @interface HighlightOptions
+ * @property {boolean} [returnTokens] - If true, returns tokens instead of HTML. Default is false.
+ * @property {LanguageStyle} [style] - The style to use for highlighting. If not provided, the default style is used.
+ */
+type HighlightOptions = {
+    returnTokens?: boolean,
+    style?: LanguageStyle
+}
+
+/**
  * A class for syntax highlighting code.
  *
  * The Flashlight class takes language classes and a style configuration,
@@ -105,18 +116,24 @@ export default class Flashlight {
     }
 
     /**
-     * Highlights the provided code using the specified language's syntax rules.
-     *
-     * @param code - The source code string to highlight
-     * @param language - The programming language name to use for highlighting
-     * @returns A Promise that resolves to an HTML string with syntax highlighting applied
-     * @throws {Error} If the specified language is not supported
+     * Highlights code using the specified language and options.
+     * 
+     * @param code - The source code to highlight
+     * @param language - The constructor of the language to use for highlighting
+     * @param options - Optional settings for the highlighting process
+     * @param options.returnTokens - If true, returns tokens instead of HTML
+     * @param options.style - A different style that you want to apply
+     * @returns A Promise that resolves to either:
+     *   - A string of styled HTML (default)
+     *   - An array of Token objects (if options.returnTokens is true)
+     * 
+     * @throws Error if the specified language is not registered
      */
     public async highlight(
         code: string,
         language: new () => Language,
-        style: LanguageStyle = this.defaultStyle
-    ): Promise<string> {
+        options?: HighlightOptions,
+    ): Promise<string | Token[]> {
         const wantedLanguage = this.languages.find((lang) => {
             if (lang.name == language.name) return lang;
         });
@@ -125,7 +142,11 @@ export default class Flashlight {
 
         const tokens = wantedLanguage.tokenize(code);
 
-        return this.toStyledHTML(tokens, style, wantedLanguage);
+        if (options?.returnTokens) {
+            return this.flattenTokenTrees(tokens);
+        }
+
+        return this.toStyledHTML(tokens, options?.style ?? this.defaultStyle, wantedLanguage);
     }
 
     private async parseCSSStyleDeclaration(
@@ -144,18 +165,19 @@ export default class Flashlight {
 
     private async flattenTokenTrees(tokens: Token[]): Promise<Token[]> {
         let output: Token[] = [];
-        tokens.forEach(async (token) => {
-            const newToken: Token = {
-                ...token,
-                parentToken: undefined,
-                childrenTokens: undefined
-            };
-            output.push(newToken);
-            if (token.childrenTokens)
-                output.push(
-                    ...(await this.flattenTokenTrees(token.childrenTokens))
-                );
-        });
+        let stack = tokens.toReversed();
+        while (stack.length > 0) {
+            const cur = stack.pop();
+            if (cur) {
+                output.push({
+                    tokenType: cur.tokenType,
+                    tokenValue: cur.tokenValue,
+                    childrenTokens: undefined,
+                    parentToken: undefined,
+                });
+                stack.push(...(cur?.childrenTokens?.toReversed() ?? []))
+            } else { break; }
+        }
         return output;
     }
 
