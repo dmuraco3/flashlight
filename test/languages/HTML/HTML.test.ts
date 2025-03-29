@@ -9,8 +9,6 @@ describe("HTML Tokenizer Test", () => {
         const html = new HTML();
 
         const tokens = html.tokenize(code);
-
-        console.log(tokens);
     })
 })
 
@@ -20,7 +18,7 @@ describe("HTML Highlighting Test", () => {
 
         const flashlight = new Flashlight([HTML]);
 
-        const highlightedCode = await flashlight.highlight(code, HTML);
+        const highlightedCode = await flashlight.highlight(code, "HTML");
 
         const reconstruction = highlightedCode
             .replace(/<\/?span[^\n>]*>/g, "")
@@ -34,6 +32,5 @@ describe("HTML Highlighting Test", () => {
 
         expect(reconstruction).toBe(code);
 
-        console.log(reconstruction);
     })
 })

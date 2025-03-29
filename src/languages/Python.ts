@@ -36,7 +36,7 @@ export const PythonReservedKeywords = <const>[
 ];
 
 export class Python implements Language {
-    public readonly name = "Python";
+    public readonly languageName = "Python";
 
     private tokenizer = new PythonTokenizer();
 

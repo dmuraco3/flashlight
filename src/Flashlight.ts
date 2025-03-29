@@ -14,7 +14,7 @@ export interface StyledToken extends Token {
 }
 
 export interface Language {
-    readonly name: string;
+    readonly languageName: string;
     tokenize: (code: string) => Token[];
 }
 
@@ -57,7 +57,7 @@ export type TokenType = (typeof TOKEN_TYPES)[number];
  * @property {LanguageStyle} [style] - The style to use for highlighting. If not provided, the default style is used.
  */
 type HighlightOptions = {
-    returnTokens?: boolean,
+    // returnTokens?: boolean,
     style?: LanguageStyle
 }
 
@@ -135,20 +135,20 @@ export default class Flashlight {
      */
     public async highlight(
         code: string,
-        language: new () => Language,
+        language: string,
         options?: HighlightOptions,
-    ): Promise<string | StyledToken[]> {
+    ): Promise<string> {
         const wantedLanguage = this.languages.find((lang) => {
-            if (lang.name == language.name) return lang;
+            if (lang.languageName == language) return lang;
         });
         if (!wantedLanguage)
             throw new Error(`ERROR: Unknown Language "${language}`);
 
         const tokens = wantedLanguage.tokenize(code);
 
-        if (options?.returnTokens) {
-            return this.styleTokens(tokens, options?.style ?? this.defaultStyle);
-        }
+        // if (options?.returnTokens) {
+        //     return this.styleTokens(tokens, options?.style ?? this.defaultStyle);
+        // }
 
         return this.toStyledHTML(tokens, options?.style ?? this.defaultStyle, wantedLanguage);
     }
@@ -223,7 +223,7 @@ export default class Flashlight {
                 tokens.map(
                     async (token: Token) => {
                         if (token.tokenType === "text") {
-                            if (language.name === "HTML") {
+                            if (language.languageName === "HTML") {
                                 return `${this.escapeCharacters(token.tokenValue)}`;
                             } else {
                                 return `<span>${this.escapeCharacters(token.tokenValue)}</span>`

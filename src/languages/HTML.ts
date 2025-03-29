@@ -23,7 +23,7 @@ export enum HTMLTokenizerState {
 }
 
 export class HTML implements Language {
-    public readonly name = "HTML";
+    public readonly languageName = "HTML";
 
     private tokenizer = new HTMLTokenizer();
 
